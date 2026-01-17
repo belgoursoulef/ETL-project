@@ -12,7 +12,6 @@ def main():
     if not os.path.exists(INPUT_FILE):
         print(f"Erreur: {INPUT_FILE} manquant.")  # Affiche une erreur si absent
         return
-
     # Lit le fichier JSON 
     df = pd.read_json(INPUT_FILE)
     # On montre à l'utilisateur quels types de DUT sont présents dans les données
@@ -24,16 +23,15 @@ def main():
 
     df_filtered = df
     
-    # On ne garde que les colonnes pertinentes (Passage/Obtention).
+    # On ne garde que les colonnes Passage et Obtention
     group_keys = ["Dut", "Dut_lib", "Série ou type de Bac", "Rgp_lib"]
-    
-    # On va construire la liste finale des colonnes à garder
+    # On va construire la liste finale des colonnes à garder 
     cols_to_keep = []
     # On regarde chaque colonne du tableau filtré
     for col in df_filtered.columns:
         if col in group_keys or "Obtention" in col or "Passage" in col:
             cols_to_keep.append(col)            
-    # On applique ce filtre de colonnes au tableau
+    # On applique ce filtre de colonnes au tableau 
     df_filtered = df_filtered[cols_to_keep]
 
     # le résultat est sauvegarder dans un nouveau fichier JSON
