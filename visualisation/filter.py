@@ -1,33 +1,29 @@
-import pandas as pd  # Importe pandas pour gérer les tableaux de données
-import sys  # Importe sys pour passer des arguments aux autres scripts
-import os  # Importe os pour vérifier si les fichiers existent
-import subprocess  # Importe subprocess pour lancer un autre script python (visualisation.py)
+import pandas as pd  # On utilise pandas pour gérer les tableaux de données
+import sys  # On utilise sys pour passer des arguments aux autres scripts
+import os  # On utilise os pour vérifier si les fichiers existent
+import subprocess  # On utilise subprocess pour lancer un autre script python (visualisation.py) automatiquement
 
 # Définition des noms de fichiers par défaut
 INPUT_FILE = "donnees.json"  # Le fichier source
 OUTPUT_FILE = "donnees_filtrees.json"  # Le fichier résultat après filtre
 
 def main():
-    # Vérifie si le fichier d'entrée existe
+    # on vérifie si le fichier d'entrée existe ( pour la sécurité)
     if not os.path.exists(INPUT_FILE):
         print(f"Erreur: {INPUT_FILE} manquant.")  # Affiche une erreur si absent
         return
 
-    # Lit le fichier JSON
+    # Lit le fichier JSON 
     df = pd.read_json(INPUT_FILE)
-    # Affiche un aperçu des codes DUT disponibles pour aider l'utilisateur
+    # On montre à l'utilisateur quels types de DUT sont présents dans les données
     print("DUTs disponibles :")
-    # Prend la colonne 'Dut', enlève les vides, garde les valeurs uniques et trie
+    # On nettoie la colonne 'Dut' : on enlève les cases vides, les doublons et on trie par ordre alphabétique
     duts = sorted(df['Dut'].dropna().unique())
-    # Affiche les 10 premiers pour ne pas inonder l'écran
+    # On affiche juste les 10 premiers pour ne pas encombrer la console
     print(", ".join(duts[:10]) + "...")
 
-
-    # On ne filtre PAS les lignes : on garde tous les étudiants de tous les DUT par défaut.
-    # C'est ici qu'on pourrait ajouter df_filtered = df[df['Dut'] == 'INFO'] si on voulait restreindre.
     df_filtered = df
     
-    # --- FILTRAGE DES COLONNES (Automatique) ---
     # On ne garde que les colonnes pertinentes (Passage/Obtention).
     group_keys = ["Dut", "Dut_lib", "Série ou type de Bac", "Rgp_lib"]
     
@@ -35,25 +31,18 @@ def main():
     cols_to_keep = []
     # On regarde chaque colonne du tableau filtré
     for col in df_filtered.columns:
-        # On garde la colonne SI :
-        # 1. C'est une clé de groupe (nom, bac...)
-        # 2. OU si le nom contient "Obtention"
-        # 3. OU si le nom contient "Passage"
         if col in group_keys or "Obtention" in col or "Passage" in col:
-            cols_to_keep.append(col)
-            
+            cols_to_keep.append(col)            
     # On applique ce filtre de colonnes au tableau
     df_filtered = df_filtered[cols_to_keep]
 
-    # Sauvegarde le résultat dans un nouveau fichier JSON
-    # orient='records' garde le format liste d'objets, indent=4 rend le fichier lisible
-    df_filtered.to_json(OUTPUT_FILE, orient='records', indent=4)
+    # le résultat est sauvegarder dans un nouveau fichier JSON
+    df_filtered.to_json(OUTPUT_FILE, orient='records', indent=4) # orient='records' garde le format liste d'objets, indent=4 rend le fichier lisible
     print(f"Données filtrées sauvegardées dans {OUTPUT_FILE} ({len(df_filtered)} lignes).")
-
-    # Lance automatiquement le script de visualisation sur ce nouveau fichier
+    # Lance automatiquement le script de visualisation sur ce nouveau fichier filtré
     print("Lancement de la visualisation...")
-    # C'est l'équivalent de taper "python visualisation.py donnees_filtrees.json" dans le terminal
+    # C'est l'équivalent de taper "python3 visualisation.py donnees_filtrees.json" dans le terminal, plus efficase
     subprocess.run([sys.executable, "visualisation.py", OUTPUT_FILE])
 
 if __name__ == "__main__":
-    main()  # Point d'entrée du script
+    main()# On appelle notre fonction pour l'exécuter
