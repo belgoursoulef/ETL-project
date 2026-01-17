@@ -9,7 +9,6 @@ import json
 # =============================================================================
 # PARTIE 1 : EXTRACTION
 # =============================================================================
-
 url="https://www.data.gouv.fr/api/1/datasets/r/18e77311-5d8f-424d-b73e-defc8f446ef6"
 
 #Traite les données sur la page web 
@@ -26,7 +25,7 @@ if r.status_code == 200:
             f.write(chunk)
         print("Téléchargement terminé !")
 else :
-    print("Erreur lors du téléchargement")
+    print("Erreur lors du téléchargement, code:",r.status_code)
 
 
 df = pd.read_csv("fr-esr-parcours-et-reussite-des-bacheliers-en-dut.csv", sep=";")
@@ -46,6 +45,7 @@ df.to_csv('fr-esr-parcours-et-reussite-des-bacheliers-en-dut.csv', index=False)
 # =============================================================================
 # PARTIE 2 : TRANSFORMATION 
 # =============================================================================
+
 def csv_to_json(csv_file, json_file):
     """Convertit le fichier CSV en JSON."""
     data = []
@@ -154,53 +154,40 @@ def visualisation_main(target_file="donnees_filtrees.json"):
 # PARTIE 4 : FILTRAGE
 # =============================================================================
 # Définition des noms de fichiers par défaut
-FILTER_INPUT_FILE = "donnees.json"  # Le fichier source
-FILTER_OUTPUT_FILE = "donnees_filtrees.json"  # Le fichier résultat après filtre
+INPUT_FILE = "donnees.json"  # Le fichier source
+OUTPUT_FILE = "donnees_filtrees.json"  # Le fichier résultat après filtre
 
-def filter_main():
-    # Vérifie si le fichier d'entrée existe
-    if not os.path.exists(FILTER_INPUT_FILE):
-        print(f"Erreur: {FILTER_INPUT_FILE} manquant.")  # Affiche une erreur si absent
+def main():
+    # on vérifie si le fichier d'entrée existe ( pour la sécurité)
+    if not os.path.exists(INPUT_FILE):
+        print(f"Erreur: {INPUT_FILE} manquant.")  # Affiche une erreur si absent
         return
-
-    # Lit le fichier JSON
-    df = pd.read_json(FILTER_INPUT_FILE)
-    # Affiche un aperçu des codes DUT disponibles pour aider l'utilisateur
+    # Lit le fichier JSON 
+    df = pd.read_json(INPUT_FILE)
+    # On montre à l'utilisateur quels types de DUT sont présents dans les données
     print("DUTs disponibles :")
-    # Prend la colonne 'Dut', enlève les vides, garde les valeurs uniques et trie
+    # On nettoie la colonne 'Dut' : on enlève les cases vides, les doublons et on trie par ordre alphabétique
     duts = sorted(df['Dut'].dropna().unique())
-    # Affiche les 10 premiers pour ne pas inonder l'écran
+    # On affiche juste les 10 premiers pour ne pas encombrer la console
     print(", ".join(duts[:10]) + "...")
 
-
-    # On ne filtre PAS les lignes : on garde tous les étudiants de tous les DUT par défaut.
-    # C'est ici qu'on pourrait ajouter df_filtered = df[df['Dut'] == 'INFO'] si on voulait restreindre.
     df_filtered = df
     
-    # --- FILTRAGE DES COLONNES (Automatique) ---
-    # On ne garde que les colonnes pertinentes (Passage/Obtention).
+    # On ne garde que les colonnes Passage et Obtention
     group_keys = ["Dut", "Dut_lib", "Série ou type de Bac", "Rgp_lib"]
-    
-    # On va construire la liste finale des colonnes à garder
+    # On va construire la liste finale des colonnes à garder 
     cols_to_keep = []
     # On regarde chaque colonne du tableau filtré
     for col in df_filtered.columns:
-        # On garde la colonne SI :
-        # 1. C'est une clé de groupe (nom, bac...)
-        # 2. OU si le nom contient "Obtention"
-        # 3. OU si le nom contient "Passage"
         if col in group_keys or "Obtention" in col or "Passage" in col:
-            cols_to_keep.append(col)
-            
-    # On applique ce filtre de colonnes au tableau
+            cols_to_keep.append(col)            
+    # On applique ce filtre de colonnes au tableau 
     df_filtered = df_filtered[cols_to_keep]
 
-    # Sauvegarde le résultat dans un nouveau fichier JSON
-    # orient='records' garde le format liste d'objets, indent=4 rend le fichier lisible
-    df_filtered.to_json(FILTER_OUTPUT_FILE, orient='records', indent=4)
-    print(f"Données filtrées sauvegardées dans {FILTER_OUTPUT_FILE} ({len(df_filtered)} lignes).")
-
-    # Lance automatiquement le script de visualisation sur ce nouveau fichier
+    # le résultat est sauvegarder dans un nouveau fichier JSON
+    df_filtered.to_json(OUTPUT_FILE, orient='records', indent=4) # orient='records' garde le format liste d'objets, indent=4 rend le fichier lisible
+    print(f"Données filtrées sauvegardées dans {OUTPUT_FILE} ({len(df_filtered)} lignes).")
+    # Lance automatiquement le script de visualisation sur ce nouveau fichier filtré
     print("Lancement de la visualisation...")
     # MODIFICATION POUR LE SCRIPT TOUT-EN-UN : Appel direct de la fonction au lieu de subprocess
     visualisation_main(FILTER_OUTPUT_FILE)
