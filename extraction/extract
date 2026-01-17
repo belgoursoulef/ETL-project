@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+import requests
+import pandas as pd
+
+#proxies ={
+#    "http": "http://cache-etu.univ-artois.fr:3128"
+#    "https": "http://cache-etu.univ-artois.fr:3128"}
+
+url="https://www.data.gouv.fr/api/1/datasets/r/18e77311-5d8f-424d-b73e-defc8f446ef6"
+
+#Traite les données sur la page web 
+r = requests.get(url, stream=True)
+
+r.encoding = "utf-8"
+#Vérification du fonctionnement du lien
+if r.status_code == 200:
+    
+    #Ouverture du fichier en mode écriture binaire ('wb')
+    with open(f"fr-esr-parcours-et-reussite-des-bacheliers-en-dut.csv",'wb') as f:
+        #On écrit le contenu téléchargé dans le fichier 
+        for chunk in r.iter_content(chunk_size=128):
+            f.write(chunk)
+        print("Téléchargement terminé !")
+else :
+    print("Erreur lors du téléchargement")
+
+
+df = pd.read_csv("fr-esr-parcours-et-reussite-des-bacheliers-en-dut.csv", sep=";")
+#mots contenu dans les entêtes ciblées
+col_clear = df.columns[df.columns.str.contains('Id|sigle|ou')]
+# Suppression des entêtes ciblées
+df = df.drop(columns=col_clear)
+#Remplace tout le reste par 0
+df = df.fillna(0)
+#Supprimer les doublons
+df = df.drop_duplicates()
+
+#Sauvegarder le fichier propre 
+df.to_csv('fr-esr-parcours-et-reussite-des-bacheliers-en-dut.csv', index=False)
