@@ -4,9 +4,9 @@
 
 Nous avons d’abord travaillé sur la conception de la solution (algorithmes, structure générale du programme, choix des technologies), puis sur l’implémentation.
 
-Le développement s’est appuyé sur les bases de la programmation ( vu en R107 ) vues en cours. Nous avons écrit, exécuté et corrigé plusieurs programmes afin d’aboutir à une solution fonctionnelle. Des tests réguliers ont été réalisés pour vérifier le bon fonctionnement et corriger les erreurs rencontrées.
+Le développement s’est appuyé sur les bases de la programmation ( vues en R107 ). Nous avons écrit, exécuté et corrigé plusieurs programmes afin d’aboutir à une solution fonctionnelle. Des tests réguliers ont été réalisés pour vérifier le bon fonctionnement et corriger les erreurs rencontrées.
 
-L’utilisation de GitLab ( vu en R107 ) nous a permis de travailler à plusieurs sur le même projet, de gérer les versions du code et de résoudre les conflits. La communication au sein du groupe a été essentielle pour coordonner les tâches et faire avancer le projet.
+L’utilisation de GitLab ( vues en R107 ) nous a permis de travailler à plusieurs sur le même projet, de gérer les versions du code et de résoudre les conflits. La communication au sein du groupe a été essentielle pour coordonner les tâches et faire avancer le projet.
 
 ## Compétences mises en œuvre
 
@@ -60,3 +60,4 @@ Les ressources pédagogiques suivantes ont été mobilisées tout au long du pro
 | AC13.04 | Compréhension des technologies Web | En cours |
 | AC13.05 | Choix des mécanismes de gestion de données | En cours |
 | AC13.06 | Travail collaboratif et utilisation de GitLab | Acquis |
+
