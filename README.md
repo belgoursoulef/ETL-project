@@ -6,11 +6,10 @@
 [![Source des données](https://img.shields.io/badge/Données-data.gouv.fr-orange)](https://www.data.gouv.fr/api/1/datasets/r/18e77311-5d8f-424d-b73e-defc8f446ef6)
 
 ## Participants 
-- ## DIAZENZA MOUANDA Regis Japhet
-- ## BELGOUR Aicha Soulef
-- ## ROLIN Tom
-
-
+- DIAZENZA MOUANDA Regis Japhet
+- BELGOUR Aicha Soulef
+- ROLIN Tom
+---
 ## Présentation du projet
 
 Ce projet a pour objectif de récupérer des données ouvertes depuis **data.gouv.fr**, de les traiter à l’aide de scripts Python, puis de les transformer au format **JSON** afin de les exploiter dans une **visualisation graphique sur un site web**.
