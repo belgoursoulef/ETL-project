@@ -190,7 +190,7 @@ def main():
     # Lance automatiquement le script de visualisation sur ce nouveau fichier filtré
     print("Lancement de la visualisation...")
     # MODIFICATION POUR LE SCRIPT TOUT-EN-UN : Appel direct de la fonction au lieu de subprocess
-    visualisation_main(FILTER_OUTPUT_FILE)
+    visualisation_main(OUTPUT_FILE)
 
 if __name__ == "__main__":
-    filter_main()
+    main()
